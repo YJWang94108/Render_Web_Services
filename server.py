@@ -145,13 +145,12 @@ def Start():
         'LaunchState': 0,
         'TextLength': 1024*4
     }
-    #clients = []
-    #ChatRoom = []
-    #mutex = threading.Lock()
+    clients = []
+    ChatRoom = []
+    mutex = threading.Lock()
     
     
     print(">> Start")
-    '''
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     DEFINE['HOST'] = str(local_ip)
@@ -164,4 +163,3 @@ def Start():
     openServer.start()
     openServer.join()
     print('>> Get two users!')
-    '''
