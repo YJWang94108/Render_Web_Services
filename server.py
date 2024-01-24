@@ -2,7 +2,7 @@ import socket
 import threading
 import random
 import time
-
+print(">> Set DEFINE")
 DEFINE = {
     'HOST': '127.0.0.1',
     'PORT': None,
@@ -148,6 +148,7 @@ def MainServer(Server):
 
 
 def Start():
+    print(">> Start")
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     DEFINE['HOST'] = str(local_ip)
