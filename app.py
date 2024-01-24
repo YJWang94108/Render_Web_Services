@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-import server
+from server import Start
 
 app = Flask(__name__)
 
@@ -9,4 +9,4 @@ def hello():
 
 if __name__ == '__main__':
     app.run()
-    server.Start()
+    Start()

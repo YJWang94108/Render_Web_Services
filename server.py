@@ -2,18 +2,6 @@ import socket
 import threading
 import random
 import time
-print(">> Set DEFINE")
-DEFINE = {
-    'HOST': '127.0.0.1',
-    'PORT': None,
-    'Connection': None,
-    'Timeout': 60*5,
-    'LaunchState': 0,
-    'TextLength': 1024*4
-}
-clients = []
-ChatRoom = []
-mutex = threading.Lock()
 
 def GeneratePortNumber():
     random.seed(time.time())
@@ -148,6 +136,20 @@ def MainServer(Server):
 
 
 def Start():
+    print(">> Set DEFINE")
+    DEFINE = {
+        'HOST': '127.0.0.1',
+        'PORT': None,
+        'Connection': None,
+        'Timeout': 60*5,
+        'LaunchState': 0,
+        'TextLength': 1024*4
+    }
+    clients = []
+    ChatRoom = []
+    mutex = threading.Lock()
+    
+    
     print(">> Start")
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
