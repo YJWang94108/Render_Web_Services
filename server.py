@@ -147,7 +147,7 @@ def MainServer(Server):
             break
 
 
-def launch():
+def Start():
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     DEFINE['HOST'] = str(local_ip)
