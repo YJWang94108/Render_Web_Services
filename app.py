@@ -8,6 +8,6 @@ def hello():
     return render_template("home.html")
 
 if __name__ == '__main__':
-    Start()
+    #Start()
     app.run()
     
