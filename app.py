@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import server
 
 app = Flask(__name__)
 
@@ -7,5 +8,6 @@ def hello():
     return render_template("home.html")
 
 if __name__ == '__main__':
+    server.Start()
     app.run(debug=True)
     
