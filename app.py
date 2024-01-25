@@ -9,5 +9,6 @@ def hello():
 
 if __name__ == '__main__':
     server.Start()
+    print(">> Testing", flush=True)
     app.run(debug=True)
     
