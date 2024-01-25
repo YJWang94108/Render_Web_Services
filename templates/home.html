@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-	    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
-			integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
-			crossorigin="anonymous">
-		</script>
 	    <title>Fantasy Baseball</title>
     </head>
     <style> 
@@ -84,40 +80,8 @@
         }
     </style>
 	<body>
-	    <div class="messages">
-		    <input placeholder="Enter Text ..." id=messageInput>
-		</div>
-		
-		<script>
-			const socket = io();
-
-			let messageContainer = document.querySelector(".messages");
-
-			socket.on("connect", () => {
-				let p = document.createElement("p")
-				p.innerText = "You're connected"
-				messageContainer.appendChild(p)
-			})
-
-			let messageInput = document.getElementById("messageInput")
-			messageInput.addEventListener("keypress", (e) => {
-				if (e.which === 13) {
-					socket.emit("message", messageInput.value)
-					messageInput.value = ""
-				}
-			})
-
-			socket.on('message', (message) => {
-				let messageElement = document.createElement("p")
-				messageElement.innerText = message
-				messageContainer.appendChild(messageElement)
-			})
-
-		</script>
-		<!--
         <div class="text-box">
             <a href="#" class="btn btn-white btn-animate">click me</a>
         </div>
-		-->
 	</body>	
 </html>
