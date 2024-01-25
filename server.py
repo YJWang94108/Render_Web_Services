@@ -1,8 +1,8 @@
 import socket
 
 def Start():
-    print(">> Start")
+    print(">> Start", flush=True)
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
-    print("IP:" , local_ip)
+    print(f"IP: {str(local_ip)}", flush=True)
     
