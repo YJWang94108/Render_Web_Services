@@ -27,7 +27,7 @@ def Start():
     mainServer.bind((DEFINE['HOST'], 23456))
     mainServer.listen()
     log(">> Server lsitening ...")
-    connect, addresss = Server.accept()
+    connect, addresss = mainServer.accept()
     log(f">> [ACCEPT]: {addresss}")
     connect.send(str("nice!").encode('utf-8'))
     mainServer.close()
