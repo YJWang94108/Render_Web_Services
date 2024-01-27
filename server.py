@@ -18,6 +18,17 @@ def Start():
     log(">> Start")
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
-    log(f"IP: {str(local_ip)}")
-    print('>>', DEFINE['Timeout'])
+    
+    DEFINE['HOST'] = str(local_ip)
+    log(f"HOST: {DEFINE['HOST']}")
+    
+    mainServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mainServer.settimeout(DEFINE['Timeout'])
+    mainServer.bind((DEFINE['HOST'], 23456))
+    mainServer.listen()
+    log(">> Server lsitening ...")
+    connect, addresss = Server.accept()
+    log(f">> [ACCEPT]: {addresss}")
+    connect.send(str("nice!").encode('utf-8'))
+    mainServer.close()
     
