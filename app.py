@@ -5,11 +5,9 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    print("[TEST2]", flush=True)
+    server.Start()
     return render_template("home.html")
 
 if __name__ == '__main__':
-    server.Start()
-    print(">> Testing", flush=True)
     app.run(debug=True)
     
