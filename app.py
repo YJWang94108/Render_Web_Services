@@ -18,6 +18,6 @@ def hello():
     return render_template("home.html")
 
 ## Main
-app.run(debug=True)
+app.run('0.0.0.0', debug=True)
 #socketio.run(app, debug=True)
     
