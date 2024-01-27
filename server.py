@@ -1,7 +1,7 @@
 import socket
 
 DEFINE = {
-    'HOST': '127.0.0.1',
+    'HOST': '0.0.0.0',
     'PORT': None,
     'Connection': None,
     'Timeout': 30,
@@ -19,8 +19,7 @@ def Start():
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     
-    DEFINE['HOST'] = str(local_ip)
-    log(f"HOST: {DEFINE['HOST']}")
+    log(f"HOST: {local_ip}")
     
     mainServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mainServer.settimeout(DEFINE['Timeout'])
