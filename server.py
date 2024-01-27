@@ -24,7 +24,7 @@ def Start():
     
     mainServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mainServer.settimeout(DEFINE['Timeout'])
-    mainServer.bind((DEFINE['HOST'], 23456))
+    mainServer.bind((DEFINE['HOST'], 5000))
     mainServer.listen()
     log(">> Server lsitening ...")
     try:
