@@ -25,6 +25,10 @@ def hello():
     return render_template("home.html")
 
 ## Main
+
+log('App run()')
 app.run('0.0.0.0', debug=True)
+
+log('SocketIO run()')
 socketio.run(app)
     
