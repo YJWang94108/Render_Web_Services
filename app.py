@@ -14,7 +14,7 @@ def handle_connect():
 @socketio.on('message')
 def handle_message(msg):
     print('Message:', msg)
-    socketio.emit('message', msg, broadcast=True)
+    #socketio.emit('message', msg, broadcast=True)
 
 @app.route("/Test")
 def index():
