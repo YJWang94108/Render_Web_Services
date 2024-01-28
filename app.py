@@ -26,9 +26,9 @@ def hello():
 
 ## Main
 
-log('App run()')
-app.run('0.0.0.0', debug=True)
+#log('App run()')
+#app.run('0.0.0.0', debug=True)
 
 log('SocketIO run()')
-socketio.run(app)
+socketio.run(app, debug=True)
     
