@@ -4,6 +4,13 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+def log(text:str):
+    print(f'>> [PYTHON]: {text}')
+
+@socketio.on('connect')
+def handle_connect():
+    log('Client connected!')
+
 @socketio.on('message')
 def handle_message(msg):
     print('Message:', msg)
