@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+
 
 @app.route("/Test")
 def index():
@@ -19,4 +19,5 @@ def hello():
 
 ## Main
 app.run('0.0.0.0', debug=True)
+socketio = SocketIO(app, cors_allowed_origins="*")
     
