@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>登入 - Fantasy Baseball</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body class="login-page">
+
+
+    <!-- Login Container -->
+    <main class="login-container">
+
+        <div class="login-card">
+
+            <a
+                href="{{ url_for('index') }}"
+                class="back-home"
+            >
+                ← 回首頁
+            </a>
+
+
+            <div class="login-logo">
+                ⚾
+            </div>
+
+
+            <p class="hero-label">
+                CPBL FANTASY GAME
+            </p>
+
+
+            <h1>
+                歡迎回來
+            </h1>
+
+
+            <p class="login-description">
+                輸入你的玩家名稱<br>
+                繼續你的 Fantasy Baseball 遊戲。
+            </p>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('login') }}"
+                class="login-form"
+            >
+
+                <div class="form-group">
+
+                    <label for="username">
+                        玩家名稱
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="例如：王小明"
+                        maxlength="20"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary login-button"
+                >
+                    進入遊戲
+                </button>
+
+            </form>
+
+
+            {% if error %}
+
+                <div class="error-message">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <p class="login-notice">
+                目前使用玩家名稱登入<br>
+                未來將支援 Email Login
+            </p>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

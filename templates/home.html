@@ -1,87 +1,200 @@
 <!DOCTYPE html>
-<html>
-    <head>
-	    <title>Fantasy Baseball</title>
-    </head>
-    <style> 
-        body { 
-            background-image: url('/static/img/home.png');
-            background-repeat: no-repeat; 
-            background-size: cover; 
-        } 
-        .text-box {
-            margin-left: 44vw;
-            margin-top: 42vh;
-        }
+<html lang="zh-TW">
 
-        .btn:link,
-        .btn:visited {
-            text-transform: uppercase;
-            text-decoration: none;
-            padding: 15px 40px;
-            display: inline-block;
-            border-radius: 100px;
-            transition: all .2s;
-            position: absolute;
-        }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
+    <title>Fantasy Baseball - CPBL</title>
 
-        .btn:active {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+    <!-- <link rel="stylesheet" href="../static/style.css"> -->
+</head>
 
-        .btn-white {
-            background-color: #fff;
-            color: #777;
-        }
+<body>
 
-        .btn::after {
-            content: "";
-            display: inline-block;
-            height: 100%;
-            width: 100%;
-            border-radius: 100px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            transition: all .4s;
-        }
+    <!-- Navigation -->
+    <nav class="navbar">
 
-        .btn-white::after {
-            background-color: #fff;
-        }
-
-        .btn:hover::after {
-            transform: scaleX(1.4) scaleY(1.6);
-            opacity: 0;
-        }
-
-        .btn-animated {
-            animation: moveInBottom 5s ease-out;
-            animation-fill-mode: backwards;
-        }
-
-        @keyframes moveInBottom {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0px);
-            }
-        }
-    </style>
-	<body>
-        <div class="text-box">
-            <a href="#" class="btn btn-white btn-animate">click me</a>
+        <div class="nav-logo">
+            ⚾ Fantasy Baseball
         </div>
-	</body>	
+
+        <div class="nav-links">
+            <a href="#about">遊戲介紹</a>
+            <a href="#rules">遊戲規則</a>
+            <a href="{{ url_for('login') }}" class="nav-login">
+                登入
+            </a>
+        </div>
+
+    </nav>
+
+
+    <!-- Hero -->
+    <main class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-ball">
+                ⚾
+            </div>
+
+            <p class="hero-label">
+                CPBL FANTASY GAME
+            </p>
+
+            <h1>
+                組建你的<br>
+                <span>中職夢幻球隊</span>
+            </h1>
+
+            <p class="hero-description">
+                與朋友進行雙人棒球選秀，
+                選擇你心目中的最佳球員，
+                並讓真實的中華職棒比賽決定勝負。
+            </p>
+
+            <div class="hero-buttons">
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="btn btn-primary"
+                >
+                    開始遊戲
+                </a>
+
+                <a
+                    href="#about"
+                    class="btn btn-secondary"
+                >
+                    了解遊戲
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- About -->
+    <section id="about" class="section">
+
+        <div class="section-content">
+
+            <p class="section-label">
+                HOW TO PLAY
+            </p>
+
+            <h2>
+                真實中職 × Fantasy Game
+            </h2>
+
+            <p class="section-description">
+                透過選秀組建自己的球隊，
+                球員在真實中職比賽中的表現，
+                將直接轉換成 Fantasy 分數。
+            </p>
+
+
+            <div class="features">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🧢
+                    </div>
+
+                    <h3>
+                        選秀
+                    </h3>
+
+                    <p>
+                        與對手輪流選擇中職球員，
+                        組建你的夢幻陣容。
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ⚾
+                    </div>
+
+                    <h3>
+                        真實比賽
+                    </h3>
+
+                    <p>
+                        球員的真實比賽表現，
+                        將轉換成你的 Fantasy 分數。
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🏆
+                    </div>
+
+                    <h3>
+                        決定勝負
+                    </h3>
+
+                    <p>
+                        比較雙方球隊的總分，
+                        看誰能成為 Fantasy 冠軍。
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Rules -->
+    <section id="rules" class="section section-dark">
+
+        <div class="section-content">
+
+            <p class="section-label">
+                GAME RULES
+            </p>
+
+            <h2>
+                每一場比賽，都是你的賽季
+            </h2>
+
+            <p class="section-description">
+                選擇你的球員，等待真實比賽結果，
+                然後看看你的策略能不能擊敗對手。
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            ⚾ Fantasy Baseball · CPBL Edition
+        </p>
+
+    </footer>
+
+</body>
+
 </html>
