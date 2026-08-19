@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Fantasy Baseball</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+
+    <nav class="navbar">
+
+        <div class="nav-logo">
+            ⚾ Fantasy Baseball
+        </div>
+
+        <div class="nav-links">
+
+            <span>
+                👤 {{ username }}
+            </span>
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="nav-login"
+            >
+                登出
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Dashboard -->
+
+    <main class="dashboard">
+
+        <div class="dashboard-content">
+
+            <p class="hero-label">
+                CPBL FANTASY GAME
+            </p>
+
+            <h1>
+                歡迎回來，{{ username }}！
+            </h1>
+
+            <p class="dashboard-description">
+                準備好開始你的 Fantasy Baseball 冒險了嗎？
+            </p>
+
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-icon">
+                    ⚾
+                </div>
+
+                <h2>
+                    目前沒有進行中的遊戲
+                </h2>
+
+                <p>
+                    建立一場新的 Fantasy Baseball 選秀，
+                    與朋友一決高下！
+                </p>
+
+                <button class="btn btn-primary">
+                    開始新遊戲
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+</body>
+
+</html>
