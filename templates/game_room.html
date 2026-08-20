@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Fantasy Baseball - {{ room_code }}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body class="game-room-page">
+
+
+    <!-- Navigation -->
+
+    <nav class="navbar">
+
+        <div class="nav-logo">
+            ⚾️ Fantasy Baseball
+        </div>
+
+        <div class="nav-links">
+
+            <span>
+                👤 {{ username }}
+            </span>
+
+            <span class="room-code-nav">
+                房間 {{ room_code }}
+            </span>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Game Room -->
+
+    <main class="game-room-container">
+
+
+        <!-- Game Area -->
+
+        <section class="game-area">
+
+
+            <div class="room-header">
+
+                <div>
+
+                    <p class="hero-label">
+                        CPBL FANTASY GAME
+                    </p>
+
+                    <h1>
+                        Fantasy Baseball
+                    </h1>
+
+                </div>
+
+
+                <div class="room-code">
+
+                    <span>
+                        ROOM CODE
+                    </span>
+
+                    <strong>
+                        {{ room_code }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Players -->
+
+            <section class="players-card">
+
+                <div class="players-header">
+
+                    <h2>
+                        玩家
+                    </h2>
+
+                    <span>
+                        {{ players|length }} / 2
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="players-list"
+                    class="players-list"
+                >
+
+                    {% for player in players %}
+
+                        <div class="player-item">
+
+                            <div class="player-avatar">
+                                👤
+                            </div>
+
+                            <div class="player-name">
+                                {{ player.users.username }}
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+
+                    {% if players|length < 2 %}
+
+                        <div class="player-item waiting-player">
+
+                            <div class="player-avatar">
+                                ?
+                            </div>
+
+                            <div class="player-name">
+                                等待另一位玩家...
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+
+            <!-- Game Content -->
+
+            <section class="game-placeholder">
+
+                <div class="placeholder-icon">
+                    ⚾️
+                </div>
+
+                <h2>
+                    遊戲開發中
+                </h2>
+
+                <p>
+                    Fantasy Baseball 選秀系統即將登場。
+                </p>
+
+            </section>
+
+
+        </section>
+
+
+        <!-- Chat -->
+
+        <aside
+            id="chat-panel"
+            class="chat-panel"
+        >
+
+            <div class="chat-header">
+
+                <div>
+
+                    <h2>
+                        💬 聊天室
+                    </h2>
+
+                    <span>
+                        即時聊天
+                    </span>
+
+                </div>
+
+
+                <button
+                    id="chat-close"
+                    class="chat-close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                id="chat-messages"
+                class="chat-messages"
+            >
+            </div>
+
+
+            <form
+                id="chat-form"
+                class="chat-form"
+            >
+
+                <input
+                    id="chat-input"
+                    type="text"
+                    maxlength="200"
+                    placeholder="輸入訊息..."
+                    autocomplete="off"
+                >
+
+                <button type="submit">
+                    ➤
+                </button>
+
+            </form>
+
+        </aside>
+
+
+    </main>
+
+
+    <!-- Mobile Chat Button -->
+
+    <button
+        id="chat-open"
+        class="chat-open"
+    >
+        💬
+    </button>
+
+
+    <!-- Socket.IO -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"
+    ></script>
+
+    <script>
+
+        const socket = io();
+        const roomCode = "{{ room_code }}";
+        const username = "{{ username }}";
+        const current_username = username;
+
+        const isLocked = "{{ is_locked }}".toLowerCase() === "true";
+        /*
+         * 加入 Socket.IO 房間
+         */
+        socket.emit(
+            "join_game_room",
+            {
+                room_code: roomCode,
+                username: username
+            }
+        );
+
+
+        /*
+         * 收到聊天訊息
+         */
+        socket.on(
+            "receive_message",
+            function(data) {
+
+                addMessage(
+                    data.username,
+                    data.message
+                );
+
+            }
+        );
+
+        /*
+         * 收到系統訊息
+         */
+        socket.on(
+            "system_message",
+            function(data) {
+
+                addSystemMessage(
+                    data.message
+                );
+
+            }
+        );
+
+        function addSystemMessage(message) {
+
+            const container =
+                document.getElementById(
+                    "chat-messages"
+                );
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "chat-system-message";
+
+            element.textContent =
+                message;
+
+            container.appendChild(element);
+
+            container.scrollTop =
+                container.scrollHeight;
+        }
+
+        /*
+         * 上下線系統
+         */
+        /*
+        * =========================================
+        * Socket 連線錯誤
+        * =========================================
+        */
+        socket.on("connect_error", function (error) {
+
+            console.error(
+                "Socket.IO connection error:",
+                error
+            );
+
+        });
+
+
+        /*
+        * =========================================
+        * Socket 斷線
+        * =========================================
+        */
+        socket.on("disconnect", function (reason) {
+
+            console.log(
+                "Socket.IO disconnected:",
+                reason
+            );
+
+        });
+
+
+        /*
+        * =========================================
+        * 玩家列表更新
+        * =========================================
+        */
+        socket.on(
+            "players_updated",
+            function (data) {
+                updatePlayers(
+                    data.players,
+                    data.online_users
+                );
+
+            }
+        );
+
+
+        function updatePlayers(players, onlineUsers) {
+
+            const container =
+                document.getElementById("players-list");
+
+            container.innerHTML = "";
+
+
+            players.forEach(function(player) {
+
+                const username = player.users.username;
+
+                const isOnline =
+                    onlineUsers.includes(username);
+
+
+                // 玩家項目
+                const item =
+                    document.createElement("div");
+
+                item.className = "player-item";
+
+
+                // 頭像
+                const avatar =
+                    document.createElement("div");
+
+                avatar.className = "player-avatar";
+
+                avatar.textContent = "👤";
+
+
+                // 玩家名稱
+                const name =
+                    document.createElement("div");
+
+                name.className =
+                    isOnline
+                        ? "player-name online"
+                        : "player-name offline";
+
+
+                name.textContent = username;
+
+
+                // 上下線狀態
+                const status =
+                    document.createElement("span");
+
+                status.className =
+                    "player-status";
+
+
+                status.textContent =
+                    isOnline
+                        ? " (上線)"
+                        : " (離線)";
+
+
+                // 把狀態接在名字後面
+                name.appendChild(status);
+
+
+                // 組合
+                item.appendChild(avatar);
+                item.appendChild(name);
+
+                container.appendChild(item);
+
+            });
+
+
+            // 不滿 2 人
+            if (!isLocked && players.length < 2) {
+
+                const waiting =
+                    document.createElement("div");
+
+                waiting.className =
+                    "player-item waiting-player";
+
+                waiting.innerHTML = `
+                    <div class="player-avatar">
+                        ?
+                    </div>
+
+                    <div class="player-name">
+                        等待另一位玩家...
+                    </div>
+                `;
+
+                container.appendChild(waiting);
+            }
+            else if (isLocked && players.length < 2) {
+
+                const waiting =
+                    document.createElement("div");
+
+                waiting.className =
+                    "player-item waiting-player";
+
+                waiting.innerHTML = `
+                    <div class="player-avatar">
+                        X
+                    </div>
+
+                    <div class="player-name">
+                        另一位玩家已離開
+                    </div>
+                `;
+
+                container.appendChild(waiting);
+            }
+
+
+            // 更新玩家人數
+            const count =
+                document.querySelector(
+                    ".players-header span"
+                );
+
+            if (count) {
+
+                count.textContent =
+                    `${players.length} / 2`;
+
+            }
+        }
+
+        socket.on(
+            "player_left",
+            function(data) {
+
+                showPlayerLeft(
+                    data.username
+                );
+
+            }
+        );
+
+        function showPlayerLeft(username) {
+
+            const container =
+                document.getElementById(
+                    "players-list"
+                );
+
+            // 移除等待玩家
+            const waiting =
+                container.querySelector(
+                    ".waiting-player"
+                );
+
+            if (waiting) {
+                waiting.remove();
+            }
+
+
+            const message =
+                document.createElement("div");
+
+            message.className =
+                "player-left-message";
+
+            message.textContent =
+                `${username} 已離開`;
+
+
+            container.appendChild(
+                message
+            );
+        }
+
+        /*
+         * 發送聊天訊息
+         */
+        const chatForm =
+            document.getElementById("chat-form");
+
+        const chatInput =
+            document.getElementById("chat-input");
+
+
+        chatForm.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const message =
+                    chatInput.value.trim();
+
+
+                if (!message) {
+                    return;
+                }
+
+
+                socket.emit(
+                    "send_message",
+                    {
+                        room_code: roomCode,
+                        username: username,
+                        message: message
+                    }
+                );
+
+
+                chatInput.value = "";
+
+            }
+        );
+
+
+        /*
+         * 顯示聊天訊息
+         */
+        function addMessage(
+            username,
+            message
+        ) {
+
+            const isMe = username === current_username;
+            const container =
+                document.getElementById(
+                    "chat-messages"
+                );
+
+
+            const messageElement =
+                document.createElement("div");
+
+
+            messageElement.className =
+                isMe
+                ? "chat-message mine"
+                : "chat-message";
+
+
+            const nameElement =
+                document.createElement("div");
+
+
+            nameElement.className =
+                "chat-username";
+
+
+            nameElement.textContent =
+                username;
+
+
+            const textElement =
+                document.createElement("div");
+
+
+            textElement.className =
+                "chat-text";
+
+
+            textElement.textContent =
+                message;
+
+
+            messageElement.appendChild(
+                nameElement
+            );
+
+
+            messageElement.appendChild(
+                textElement
+            );
+
+
+            container.appendChild(
+                messageElement
+            );
+
+
+            container.scrollTop =
+                container.scrollHeight;
+
+        }
+
+
+        /*
+         * 開啟聊天室
+         */
+        document
+            .getElementById("chat-open")
+            .addEventListener(
+                "click",
+                function() {
+
+                    document
+                        .getElementById(
+                            "chat-panel"
+                        )
+                        .classList.add(
+                            "open"
+                        );
+
+                }
+            );
+
+
+        /*
+         * 關閉聊天室
+         */
+        document
+            .getElementById("chat-close")
+            .addEventListener(
+                "click",
+                function() {
+
+                    document
+                        .getElementById(
+                            "chat-panel"
+                        )
+                        .classList.remove(
+                            "open"
+                        );
+
+                }
+            );
+
+    </script>
+
+
+</body>
+
+</html>

@@ -62,31 +62,111 @@
                 歡迎回來，{{ username }}！
             </h1>
 
-            <p class="dashboard-description">
-                準備好開始你的 Fantasy Baseball 冒險了嗎？
-            </p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
 
+                {% for category, message in messages %}
 
-            <div class="dashboard-card">
+                    <div class="dashboard-alert {{ category }}-alert">
+                        ⚠️ {{ message }}
+                    </div>
 
-                <div class="dashboard-icon">
-                    ⚾
-                </div>
+                {% endfor %}
 
-                <h2>
-                    目前沒有進行中的遊戲
-                </h2>
+            {% endwith %}
 
+            {% if current_game %}
+                <section class="current-game">
+
+                    <h2>目前遊戲房間</h2>
+                    <p>
+                        房間碼：
+                        <strong>
+                            {{ current_game.games.room_code }}
+                        </strong>
+                    </p>
+                    <a
+                        href="{{ url_for(
+                            'game_room',
+                            room_code=current_game.games.room_code
+                        ) }}"
+                    >
+                        進入遊戲
+                    </a>
+                    <form
+                        method="POST"
+                        action="{{ url_for('leave_game') }}"
+                    >
+                        <button type="submit">
+                            退出房間
+                        </button>
+                    </form>
+                </section>
+            {% else %}
+                <p class="dashboard-description">
+                    準備好開始你的 Fantasy Baseball 冒險了嗎？
+                </p>
                 <p>
                     建立一場新的 Fantasy Baseball 選秀，
                     與朋友一決高下！
                 </p>
 
-                <button class="btn btn-primary">
-                    開始新遊戲
-                </button>
+                <div class="game-actions">
 
-            </div>
+                    <section class="create-game">
+
+                        <div class="game-action-icon">
+                            ⚾
+                        </div>
+
+                        <h2>建立遊戲</h2>
+
+                        <p>
+                            建立一個新的 Fantasy Baseball 房間
+                        </p>
+
+                        <a href="{{ url_for('create_game') }}">
+                            建立新房間
+                        </a>
+
+                    </section>
+
+
+                    <section class="join-game">
+
+                        <div class="game-action-icon">
+                            🎟️
+                        </div>
+
+                        <h2>加入遊戲</h2>
+
+                        <p>
+                            輸入朋友提供的房間碼
+                        </p>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('join_game') }}"
+                        >
+
+                            <input
+                                type="text"
+                                name="room_code"
+                                maxlength="6"
+                                placeholder="例如：A7K2Q9"
+                                required
+                            >
+
+                            <button type="submit">
+                                加入房間
+                            </button>
+
+                        </form>
+
+                    </section>
+
+                </div>
+
+            {% endif %}
 
         </div>
 
