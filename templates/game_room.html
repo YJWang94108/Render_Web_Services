@@ -240,7 +240,14 @@
         id="chat-open"
         class="chat-open"
     >
-        💬
+        <span id="chat-icon">💬</span>
+
+        <span
+            id="chat-unread"
+            class="chat-unread"
+        >
+            0
+        </span>
     </button>
 
 
@@ -257,6 +264,10 @@
         const current_username = username;
 
         const isLocked = "{{ is_locked }}".toLowerCase() === "true";
+
+        let unreadCount = 0;
+        // 第一則未讀訊息
+        let unreadMarkerMessage = null;
         /*
          * 加入 Socket.IO 房間
          */
@@ -276,13 +287,67 @@
             "receive_message",
             function(data) {
 
-                addMessage(
+                const message = addMessage(
                     data.username,
                     data.message
                 );
+                
+                const chatPanel =
+                    document.getElementById(
+                        "chat-panel"
+                    );
 
+
+                const isChatOpen =
+                    chatPanel.classList.contains(
+                        "open"
+                    );
+
+                // 聊天室目前沒有開啟
+                if (!isChatOpen) {
+                    unreadCount++;
+                    if (unreadMarkerMessage === null) {
+                        unreadMarkerMessage = message;
+                    }
+
+                    updateUnreadBadge();
+                }
             }
         );
+
+        function updateUnreadBadge() {
+
+            const badge =
+                document.getElementById(
+                    "chat-unread"
+                );
+
+            const icon =
+                document.getElementById(
+                    "chat-icon"
+                );
+
+
+            if (unreadCount > 0) {
+
+                badge.textContent =
+                    unreadCount > 99
+                        ? "99+"
+                        : unreadCount;
+
+                badge.style.display = "block";
+
+                // 有新訊息
+                icon.textContent = "💬";
+
+            } else {
+
+                badge.style.display ="none";
+
+                icon.textContent = "💬";
+
+            }
+        }
 
         /*
          * 收到系統訊息
@@ -580,7 +645,7 @@
 
 
                 chatInput.value = "";
-
+                scrollChatToBottom();
             }
         );
 
@@ -643,14 +708,55 @@
                 textElement
             );
 
+            const shouldScroll = isChatNearBottom();
 
             container.appendChild(
                 messageElement
             );
 
+            if (shouldScroll) {
+                scrollChatToBottom();
+            }
+                
+            return messageElement;
+        }
 
-            container.scrollTop =
-                container.scrollHeight;
+        function isChatNearBottom() {
+
+            const container =
+                document.getElementById(
+                    "chat-messages"
+                );
+
+            if (!container) {
+                return true;
+            }
+
+
+            const distanceFromBottom =
+                container.scrollHeight -
+                container.scrollTop -
+                container.clientHeight;
+
+
+            return distanceFromBottom < 100;
+
+        }
+
+        function scrollChatToBottom() {
+            const container =
+                document.getElementById(
+                    "chat-messages"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: "smooth"
+            });
 
         }
 
@@ -664,16 +770,109 @@
                 "click",
                 function() {
 
-                    document
-                        .getElementById(
+                    const chatPanel =
+                        document.getElementById(
                             "chat-panel"
-                        )
-                        .classList.add(
-                            "open"
                         );
 
+                    const chatButton =
+                        document.getElementById(
+                            "chat-open"
+                        );
+
+
+                    // 開啟聊天室
+                    chatPanel.classList.add(
+                        "open"
+                    );
+
+
+                    // 隱藏開啟聊天室按鈕
+                    chatButton.classList.add(
+                        "hidden"
+                    );
+
+                    const hadUnread = unreadCount > 0;
+                    
+                    // 標記訊息為已讀
+                    markMessagesAsRead();
+
+                    setTimeout(
+                        function() {
+                            if (hadUnread) {
+                                const marker =
+                                    document.getElementById(
+                                        "unread-marker"
+                                    );
+                                if (marker) {
+                                    marker.scrollIntoView({
+                                        behavior: "auto",
+                                        block: "center"
+                                    });
+                                }
+                            } else {
+                                scrollChatToBottom();
+                            }
+                        },
+                        50
+                    );
                 }
             );
+
+        function markMessagesAsRead() {
+
+            if (unreadCount === 0) return;
+
+            const unreadMessage = unreadMarkerMessage;
+
+            // 先清除未讀狀態
+            unreadCount = 0;
+            unreadMarkerMessage = null;
+
+            updateUnreadBadge();
+            // 建立未讀分隔線
+            if (unreadMessage instanceof HTMLElement) {
+                // 如果舊 marker 存在，先移除
+                const oldMarker =
+                    document.getElementById(
+                        "unread-marker"
+                    );
+
+                if (oldMarker) {
+                    oldMarker.remove();
+                }
+
+                const marker =
+                    document.createElement(
+                        "div"
+                    );
+
+                marker.id =
+                    "unread-marker";
+
+                marker.className =
+                    "unread-marker";
+
+                marker.textContent =
+                    "--- 以下內容尚未讀過 ---";
+                
+                unreadMessage.before(marker);
+
+                // 捲到未讀訊息附近
+                setTimeout(
+                    function() {
+
+                        marker.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+
+                    },
+                    50
+                );
+            }
+            
+        }
 
 
         /*
@@ -693,8 +892,81 @@
                             "open"
                         );
 
+                    document
+                        .getElementById(
+                            "chat-open"
+                        )
+                        .classList.remove(
+                            "hidden"
+                        );
+
+                    // 清除「以下內容尚未讀過」分隔線
+                    const marker =
+                        document.getElementById(
+                            "unread-marker"
+                        );
+
+                    if (marker) {
+
+                        marker.remove();
+
+                    }
+
                 }
             );
+
+            function adjustChatForKeyboard() {
+
+                if (!window.visualViewport) {
+                    return;
+                }
+
+                const viewport = window.visualViewport;
+
+                const chatPanel =
+                    document.getElementById(
+                        "chat-panel"
+                    );
+
+                if (!chatPanel) {
+                    return;
+                }
+
+                const keyboardHeight = window.innerHeight - viewport.height;
+
+                if (keyboardHeight > 0) {
+                    chatPanel.style.height = viewport.height + "px";
+                } else {
+                    chatPanel.style.height = "100dvh";
+                }
+
+            }
+
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener(
+                    "resize",
+                    adjustChatForKeyboard
+                );
+                window.visualViewport.addEventListener(
+                    "scroll",
+                    adjustChatForKeyboard
+                );
+            }
+
+            document
+                .getElementById("chat-input")
+                .addEventListener(
+                    "focus",
+                    function() {
+                        setTimeout(
+                            function() {
+                                adjustChatForKeyboard();
+                                scrollChatToBottom();
+                            },
+                            300
+                        );
+                    }
+                );
 
     </script>
 
