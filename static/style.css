@@ -1855,7 +1855,11 @@ footer {
 
 
 .chat-message {
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    margin-bottom: 12px;
 }
 
 .chat-message.mine {
@@ -2086,4 +2090,54 @@ footer {
         rgba(255, 255, 255, 0.35);
 
     font-size: 0.75rem;
+}
+
+.chat-unread {
+    display: none;
+
+    position: absolute;
+
+    top: -4px;
+    right: -4px;
+
+    min-width: 18px;
+    height: 18px;
+
+    padding: 0 4px;
+
+    border-radius: 50%;
+
+    background: #ef4444;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    line-height: 18px;
+
+    text-align: center;
+}
+
+.chat-toggle {
+    position: relative;
+}
+
+#chat-open.hidden {
+    display: none;
+}
+
+.unread-marker {
+
+    width: 100%;
+
+    margin: 12px 0;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    color: #9ca3af;
+
 }

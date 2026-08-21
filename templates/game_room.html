@@ -240,7 +240,14 @@
         id="chat-open"
         class="chat-open"
     >
-        💬
+        <span id="chat-icon">💬</span>
+
+        <span
+            id="chat-unread"
+            class="chat-unread"
+        >
+            0
+        </span>
     </button>
 
 
@@ -257,6 +264,10 @@
         const current_username = username;
 
         const isLocked = "{{ is_locked }}".toLowerCase() === "true";
+
+        let unreadCount = 0;
+        // 第一則未讀訊息
+        let unreadMarkerMessage = null;
         /*
          * 加入 Socket.IO 房間
          */
@@ -276,13 +287,67 @@
             "receive_message",
             function(data) {
 
-                addMessage(
+                const message = addMessage(
                     data.username,
                     data.message
                 );
+                
+                const chatPanel =
+                    document.getElementById(
+                        "chat-panel"
+                    );
 
+
+                const isChatOpen =
+                    chatPanel.classList.contains(
+                        "open"
+                    );
+
+                // 聊天室目前沒有開啟
+                if (!isChatOpen) {
+                    unreadCount++;
+                    if (unreadMarkerMessage === null) {
+                        unreadMarkerMessage = message;
+                    }
+
+                    updateUnreadBadge();
+                }
             }
         );
+
+        function updateUnreadBadge() {
+
+            const badge =
+                document.getElementById(
+                    "chat-unread"
+                );
+
+            const icon =
+                document.getElementById(
+                    "chat-icon"
+                );
+
+
+            if (unreadCount > 0) {
+
+                badge.textContent =
+                    unreadCount > 99
+                        ? "99+"
+                        : unreadCount;
+
+                badge.style.display = "block";
+
+                // 有新訊息
+                icon.textContent = "💬";
+
+            } else {
+
+                badge.style.display ="none";
+
+                icon.textContent = "💬";
+
+            }
+        }
 
         /*
          * 收到系統訊息
@@ -606,8 +671,8 @@
 
             messageElement.className =
                 isMe
-                ? "chat-message mine"
-                : "chat-message";
+                    ? "chat-message mine"
+                    : "chat-message";
 
 
             const nameElement =
@@ -651,7 +716,8 @@
 
             container.scrollTop =
                 container.scrollHeight;
-
+                
+            return messageElement;
         }
 
 
@@ -664,16 +730,75 @@
                 "click",
                 function() {
 
-                    document
-                        .getElementById(
+                    const chatPanel =
+                        document.getElementById(
                             "chat-panel"
-                        )
-                        .classList.add(
-                            "open"
                         );
 
+                    const chatButton =
+                        document.getElementById(
+                            "chat-open"
+                        );
+
+
+                    // 開啟聊天室
+                    chatPanel.classList.add(
+                        "open"
+                    );
+
+
+                    // 隱藏開啟聊天室按鈕
+                    chatButton.classList.add(
+                        "hidden"
+                    );
+
+
+                    // 標記訊息為已讀
+                    markMessagesAsRead();
                 }
             );
+
+        function markMessagesAsRead() {
+
+            if (unreadCount === 0) return;
+
+            const unreadMessage = unreadMarkerMessage;
+
+            // 先清除未讀狀態
+            unreadCount = 0;
+            unreadMarkerMessage = null;
+
+            updateUnreadBadge();
+            // 建立未讀分隔線
+            if (unreadMessage instanceof HTMLElement) {
+                // 如果舊 marker 存在，先移除
+                const oldMarker =
+                    document.getElementById(
+                        "unread-marker"
+                    );
+
+                if (oldMarker) {
+                    oldMarker.remove();
+                }
+
+                const marker =
+                    document.createElement(
+                        "div"
+                    );
+
+                marker.id =
+                    "unread-marker";
+
+                marker.className =
+                    "unread-marker";
+
+                marker.textContent =
+                    "--- 以下內容尚未讀過 ---";
+                
+                unreadMessage.before(marker);
+            }
+            
+        }
 
 
         /*
@@ -692,6 +817,26 @@
                         .classList.remove(
                             "open"
                         );
+
+                    document
+                        .getElementById(
+                            "chat-open"
+                        )
+                        .classList.remove(
+                            "hidden"
+                        );
+
+                    // 清除「以下內容尚未讀過」分隔線
+                    const marker =
+                        document.getElementById(
+                            "unread-marker"
+                        );
+
+                    if (marker) {
+
+                        marker.remove();
+
+                    }
 
                 }
             );
