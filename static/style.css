@@ -1991,6 +1991,57 @@ footer {
     z-index: 1000;
 }
 
+@media (min-width: 800px) {
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+
+        overflow: hidden;
+    }
+
+
+    .game-room-page {
+        width: 100%;
+        height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+    }
+
+
+    .game-room-container {
+        flex: 1;
+
+        width: 100%;
+        min-height: 0;
+
+        display: flex;
+
+        overflow: hidden;
+    }
+
+
+    .game-area {
+        flex: 1;
+
+        min-width: 0;
+        min-height: 0;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        box-sizing: border-box;
+
+        padding: 0 20px 48px;
+    }
+
+}
+
 /* =========================================
    Mobile Game Room
    ========================================= */
@@ -2002,18 +2053,33 @@ footer {
         width: 100%;
         height: 100%;
 
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .game-room-page {
+        min-height: 100dvh;
+        overflow-x: hidden;
+        overflow-y: visible;
     }
 
     .game-room-container {
+        width: 100%;
+        min-height: 100dvh;
+
         display: block;
 
-        min-height: auto;
+        overflow: visible;
     }
 
 
     .game-area {
         padding: 24px 16px 90px;
+
+        width: 100%;
+        min-height: auto;
+
+        overflow: visible;
     }
 
 

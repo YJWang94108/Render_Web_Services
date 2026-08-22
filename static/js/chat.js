@@ -650,6 +650,10 @@ document
 
 function adjustChatForKeyboard() {
 
+    if (window.innerWidth > 800) {
+        return;
+    }
+
     if (!window.visualViewport) {
         return;
     }
@@ -675,7 +679,7 @@ function adjustChatForKeyboard() {
 
 }
 
-if (window.visualViewport) {
+if (window.visualViewport && window.innerWidth <= 800) {
     window.visualViewport.addEventListener(
         "resize",
         adjustChatForKeyboard
